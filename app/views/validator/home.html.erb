@@ -4,7 +4,7 @@
 </div>
 <div class = "panel-body center">
 <%= form_for :zip_file do |form| %>
-  <%= form.file_field :file %>
+  <%= form.file_field :file, accept: 'application/zip' %>
   <%= form.submit %>
 <% end  %>
 </div>
