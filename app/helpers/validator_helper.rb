@@ -6,32 +6,38 @@ module ValidatorHelper
     tmp.write zip_file.read
 
     proj_structure = [['pom.xml',false], ['.classpath', false], ['.project', false] ].to_h
+    one_root = true
     begin
       Zip::File.open(tmp.path) do |zip_file|
+        first_file = zip_file.entries.first.name
+        root = first_file.slice 0..(first_file.index '/')
+
         zip_file.each do |entry|
           proj_structure.keys.each do |key|
-            if entry.name.include? key.to_s
-              proj_structure[key] = true
-            end
+            proj_structure[key] = true if entry.name.include? key.to_s
+            one_root = false unless entry.name.start_with? root
           end
         end
       end
     rescue
-      return status_string proj_structure.reject { |k,v| v}
+      return status_string proj_structure.keys.reject { |k| proj_structure[k] }, one_root
     ensure
       tmp.close
       tmp.unlink
     end
 
-    status_string proj_structure.reject { |k,v| v}
+    status_string proj_structure.keys.reject { |k| proj_structure[k] }, one_root
   end
 
-  def status_string missing_files
-    if missing_files.empty?
-      "Congratulations! That's a valid Eclipse export!"
+  def status_string(missing_files, one_root)
+    if missing_files.empty? && one_root
+      s = "Congratulations! That's a valid Eclipse export!"
     else
-      "Sorry, that's not a valid Eclipse export.<br>You're missing #{missing_files.keys.join(', ')}"
+      s = "Sorry, that's not a valid Eclipse export."
+      s += '<br>Your export contains more than one root directory.'
+      s += "<br>You're missing #{missing_files.join(', ')}" unless missing_files.empty?
     end
+    s
   end
-
+  
 end
