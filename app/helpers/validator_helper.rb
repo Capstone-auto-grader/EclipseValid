@@ -34,10 +34,10 @@ module ValidatorHelper
       s = "Congratulations! That's a valid Eclipse export!"
     else
       s = "Sorry, that's not a valid Eclipse export."
-      s += '<br>Your export contains more than one root directory.'
+      s += '<br>Your export contains more than one root directory.' unless one_root
       s += "<br>You're missing #{missing_files.join(', ')}" unless missing_files.empty?
     end
     s
   end
-  
+
 end
