@@ -1,10 +1,13 @@
 <div class="jumbotron center">
 <h2> <%= @zip_status %> </h2>
-<h3>Upload a zip file here:</h3>
-</div>
-<div class = "panel-body center">
+<h3>Upload a zip file here!</h3>
+<table class="table">
+<tr>
 <%= form_for :zip_file do |form| %>
-  <%= form.file_field :file, accept: 'application/zip' %>
-  <%= form.submit 'Is it a valid Eclipse export?' %>
-<% end  %>
+  <td><%= form.file_field :file, accept: 'application/zip' %></td>
+
+  <td><%= form.submit 'Is it a valid Eclipse export?', class: 'btn' %></td>
+<% end %>
+</tr>
+</table>
 </div>
