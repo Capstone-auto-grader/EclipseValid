@@ -4,15 +4,17 @@ module ValidatorHelper
     tmp = Tempfile.new
     tmp.binmode
     tmp.write zip_file.read
-
+    tmp.close
     proj_structure = [['pom.xml',false], ['.classpath', false], ['.project', false] ].to_h
     one_root = true
+    # puts "ENTERING #{tmp.path}"
     begin
       Zip::File.open(tmp.path) do |zip_file|
         first_file = zip_file.entries.first.name
         root = first_file.slice 0..(first_file.index '/')
 
         zip_file.each do |entry|
+          puts entry.name
           proj_structure.keys.each do |key|
             proj_structure[key] = true if entry.name.include? key.to_s
             one_root = false unless entry.name.start_with? root
